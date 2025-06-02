@@ -1,0 +1,63 @@
+import time
+from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
+from selenium import webdriver
+import undetected_chromedriver as uc
+import ttkbootstrap as ttk
+from ttkbootstrap import Style
+from tkinter import messagebox
+import threading
+import math
+
+def get_videos():
+    title_and_views = []
+
+    search = entry.get()
+    search = "+".join(search.split())
+    url = f"https://www.youtube.com/results?search_query={search}"
+
+    options = uc.ChromeOptions()
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+
+    driver = webdriver.Chrome(options=options)
+    driver.get(url)
+    driver.execute_script("window.scrollBy(0, 50000);")
+
+    titles = driver.find_elements(By.ID, "video-title")
+    views = driver.find_elements(By.CLASS_NAME, "style-scope ytd-video-meta-block")
+
+    for i in range(len(titles)):
+        title_and_views.append(titles[i].text + ": " + views[i].text + "\n")
+
+    views_with_letters = []
+    views_without_letters = []
+
+    chunk_size = 15
+    for i in range(0, len(title_and_views), chunk_size):
+        chunk = title_and_views[i:i+chunk_size]
+        for x in range(i, min(i + chunk_size, len(views))):
+            view_text = str(views[x].text).split()[0]
+            views_with_letters.append(view_text)
+        messagebox.showinfo("Results", "\n".join(chunk))
+
+    driver.quit()
+
+def start_thread():
+    thread = threading.Thread(target=get_videos)
+    thread.start()
+
+app = ttk.Window(themename="journal")
+app.geometry("800x400")
+app.title("YouTube Scraper")
+
+label = ttk.Label(app, text="Type something", font="Ariel 24 bold")
+entry = ttk.Entry(app)
+button = ttk.Button(app, text="Search", command=start_thread)
+
+label.pack()
+entry.pack()
+button.pack(pady=10)
+
+app.mainloop()
