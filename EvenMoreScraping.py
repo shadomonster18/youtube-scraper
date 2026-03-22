@@ -49,10 +49,10 @@ def get_videos():
         i = 0
 
         for title in titles:
-            title_and_views.append(title.text + ": "  + views[i].text + "\n")#append all of the titles and their corresponding view count to a list
+            title_and_views.append(title.text + ": "  + views[i].text + "\n")# append all of the titles and their corresponding view count to a list
             i+=1
     
-        #show fifteen videos at a time in a message box
+        # show fifteen videos at a time in a message box
         chunk_size = 15
         for i in range(0, len(title_and_views), chunk_size):
             chunk = title_and_views[i:i+chunk_size]
@@ -73,12 +73,12 @@ window = ttk.Window(themename="journal")
 
 window.geometry("800x400")
 
-#ui setup
+# ui setup
 label = tk.Label(text="Type something", font="Ariel 24 bold")
 entry = tk.Entry()
 button = tk.Button(text="Search", command=start_thread)
 
-#place the elements on the screen
+# place the elements on the screen
 label.pack()
 entry.pack(pady=5)
 button.pack(pady=10)
